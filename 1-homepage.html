@@ -34,7 +34,7 @@
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
       crossorigin="anonymous"
     ></script>
-
+<!--
 		<script type="application/javascript">
 			$(document).ready(function() {
 
@@ -74,7 +74,7 @@
 
 				getQuotes();
 			});
-		</script>
+		</script> -->
 
     <link
       rel="stylesheet"
@@ -2127,5 +2127,48 @@
       </div>
     </footer>
 <!--  END OF FOOTER  -->
+
+<!--  SCRIPT  -->
+    <script type="application/javascript">
+      $(document).ready(function() {
+
+        function addQuotes(id, pic, name, title, text) {
+          $("carousel-inner:nth-of-type(1)").append(`
+              <div class="carousel-item">
+                <div class="row mx-auto align-items-center">
+                  <div class="col-12 col-sm-2 col-lg-2 offset-lg-1 text-center">
+                    <img
+                      src="${pic}"
+                      class="d-block align-self-center"
+                      alt="Carousel Pic ${id}"
+                    />
+                  </div>
+                  <div class="col-12 col-sm-7 offset-sm-2 col-lg-9 offset-lg-0">
+                    <div class="quote-text">
+                      <p class="text-white">${text}</p>
+                      <h4 class="text-white font-weight-bold">${name}</h4>
+                      <span class="text-white">${title}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>`);
+        }
+
+        function getQuotes() {
+          $("#not-loader").hide();
+          $.ajax({url: "https://smileschool-api.hbtn.info/quotes", type: "GET", dataType: "jsonp", success: function(data) {
+              data.forEach(function(item) {
+                addQuotes(item.id, item.pic_url, item.name, item.title, item.text);
+              });
+              $("#loader").hide();
+              $("#not-loader").show();
+            }, error: function() { $("#loader").replaceWith('<h1 style="margin: auto; color: white;">ERROR</h1>'); }
+          });
+        }
+
+        getQuotes();
+      });
+    </script>
+<!--  END OF SCRIPT  -->
   </body>
 </html>
