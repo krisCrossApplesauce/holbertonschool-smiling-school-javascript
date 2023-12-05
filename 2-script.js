@@ -45,14 +45,7 @@ function getTutorials() {
 		method: "GET",
 		success: function(data) {
 			var tutorials = `<div class="carousel" id="tutorial-carousel">`;
-/*						<div class="carousel-inner" id="carousel-inner-tutorials">`; */
 			data.forEach(function(item) {
-/**			if (index == 0) {
-					tutorials += '<div class="carousel-item" id="carousel-item-tutorial" active>';
-				}
-				else {
-					tutorials += '<div class="carousel-item" id="carousel-item-tutorial">';
-				} */
 				tutorials += `
 								<div class="card">
 									<img
@@ -119,9 +112,10 @@ function getTutorials() {
 			$("#tutorial-carousel").slick({
 				infinite: true,
 				slidesToShow: 4,
-				slidesToScroll: 1,
+				slidesToScroll: 4,
+/**
 				autoplay: true,
-				autoplaySpeed: 2000,
+				autoplaySpeed: 2000, */
 				prevArrow: $('.carousel-control-prev'),
 				nextArrow: $('.carousel-control-next'),
 /**				responsive: [
