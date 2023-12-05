@@ -44,48 +44,49 @@ function getTutorials() {
 		url: "https://smileschool-api.hbtn.info/popular-tutorials",
 		method: "GET",
 		success: function(data) {
-			var tutorials = `<div class="carousel-inner" id="carousel-inner-tutorials">`;
-			data.forEach(function(item, index) {
-				if (index < 4) {
-					tutorials += '<div class="carousel-item id="carousel-item-tutorial" active">';
+			var tutorials = `<div class="carousel" id="tutorial-carousel">`;
+/*						<div class="carousel-inner" id="carousel-inner-tutorials">`; */
+			data.forEach(function(item) {
+/**			if (index == 0) {
+					tutorials += '<div class="carousel-item" id="carousel-item-tutorial" active>';
 				}
 				else {
 					tutorials += '<div class="carousel-item" id="carousel-item-tutorial">';
-				}
+				} */
 				tutorials += `
 								<div class="card">
-								<img
-									src="${item.thumb_url}"
-									class="card-img-top"
-									alt="Video thumbnail"
-								/>
-								<div class="card-img-overlay text-center">
 									<img
-										src="images/play.png"
-										alt="Play"
-										width="64px"
-										class="align-self-center play-overlay"
+										src="${item.thumb_url}"
+										class="card-img-top"
+										alt="Video thumbnail"
 									/>
-								</div>
-								<div class="card-body">
-									<h5 class="card-title font-weight-bold">
-										${item.title}
-									</h5>
-									<p class="card-text text-muted">
-										${item['sub-title']}
-									</p>
-									<div class="creator d-flex align-items-center">
+									<div class="card-img-overlay text-center">
 										<img
-											src="${item.author_pic_url}"
-											alt="Creator of
-											Video"
-											width="30px"
-											class="rounded-circle"
+											src="images/play.png"
+											alt="Play"
+											width="64px"
+											class="align-self-center play-overlay"
 										/>
-										<h6 class="pl-3 m-0 main-color">${item.author}</h6>
 									</div>
-									<div class="info pt-3 d-flex justify-content-between">
-										<div class="rating">`
+									<div class="card-body">
+										<h5 class="card-title font-weight-bold">
+											${item.title}
+										</h5>
+										<p class="card-text text-muted">
+											${item['sub-title']}
+										</p>
+										<div class="creator d-flex align-items-center">
+											<img
+												src="${item.author_pic_url}"
+												alt="Creator of
+												Video"
+												width="30px"
+												class="rounded-circle"
+											/>
+											<h6 class="pl-3 m-0 main-color">${item.author}</h6>
+										</div>
+										<div class="info pt-3 d-flex justify-content-between">
+											<div class="rating">`
 				for (i = 0; i < 5; i++) {
 					if (i < item.star) {
 						tutorials += `
@@ -110,15 +111,34 @@ function getTutorials() {
 										<span class="main-color">${item.duration}</span>
 									</div>
 								</div>
-							</div>
-						</div>`;
+							</div>`;
 			});
-			$("#carousel-item-tutorial").slick({
+/*			tutorials += `</div>`; */
+			$("#tutorial-carousel").replaceWith(tutorials);
+			$("#tutorial-loader").hide();
+			$("#tutorial-carousel").slick({
 				infinite: true,
 				slidesToShow: 4,
-				slidesToScroll: 1
+				slidesToScroll: 1,
+				autoplay: true,
+				autoplaySpeed: 2000,
+				prevArrow: $('.carousel-control-prev'),
+				nextArrow: $('.carousel-control-next'),
+/**				responsive: [
+					{
+						breakpoint: 992,
+						settings: {
+							slidesToShow: 2
+						}
+					},
+					{
+						breakpoint: 576,
+						settings: {
+							slidesToShow: 1
+						}
+					}
+				] */
 			});
-			$("#carousel-inner-tutorials").replaceWith(tutorials);
 		},
 		error: function() { $("#tutorial-loader").replaceWith('<h1 style="margin: auto; color: white;">ERROR</h1>'); }
 	});
