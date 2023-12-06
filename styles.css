@@ -311,7 +311,18 @@
   padding-bottom: 75px;
   color: var(--background-color);
 }
+/**
+#tutorial-carousel {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
 
+#tutorial-carousel .card {
+	width: 16rem;
+	flex: 0 1 calc(25% - 1em);
+}
+*/
 .section .card {
   border: 0;
   width: 16rem;

@@ -44,10 +44,9 @@ function getTutorials() {
 		url: "https://smileschool-api.hbtn.info/popular-tutorials",
 		method: "GET",
 		success: function(data) {
-			var tutorials = `<div class="carousel" id="tutorial-carousel">`;
 			data.forEach(function(item) {
+				var tutorials = '';
 				tutorials += `
-								<div class="card">
 									<img
 										src="${item.thumb_url}"
 										class="card-img-top"
@@ -80,6 +79,7 @@ function getTutorials() {
 										</div>
 										<div class="info pt-3 d-flex justify-content-between">
 											<div class="rating">`
+
 				for (i = 0; i < 5; i++) {
 					if (i < item.star) {
 						tutorials += `
@@ -101,24 +101,26 @@ function getTutorials() {
 
 				tutorials += `
 											</div>
-										<span class="main-color">${item.duration}</span>
-									</div>
-								</div>
-							</div>`;
+											<span class="main-color">${item.duration}</span>
+										</div>
+									</div>`;
+
+				var card = $('<div>').addClass('card').html(tutorials);
+				$("#tutorial-carousel").append(card);
 			});
-/*			tutorials += `</div>`; */
-			$("#tutorial-carousel").replaceWith(tutorials);
 			$("#tutorial-loader").hide();
+
 			$("#tutorial-carousel").slick({
-				infinite: true,
+				infinite: false,
 				slidesToShow: 4,
-				slidesToScroll: 4,
+				slidesToScroll: 1,
 /**
 				autoplay: true,
-				autoplaySpeed: 2000, */
+				autoplaySpeed: 2000,
+*/
 				prevArrow: $('.carousel-control-prev'),
 				nextArrow: $('.carousel-control-next'),
-/**				responsive: [
+				responsive: [
 					{
 						breakpoint: 992,
 						settings: {
@@ -131,8 +133,10 @@ function getTutorials() {
 							slidesToShow: 1
 						}
 					}
-				] */
+				]
 			});
+			$("#tutorial-loader").hide();
+			$("#tutorial-carousel").removeClass("d-none");
 		},
 		error: function() { $("#tutorial-loader").replaceWith('<h1 style="margin: auto; color: white;">ERROR</h1>'); }
 	});
