@@ -156,6 +156,9 @@ function getTutorials(section) {
 
 $(document).ready(function() {
 	getQuotes();
-	getTutorials("Most popular tutorials");
-	getTutorials("Latest videos");
+
+	if (window.location.pathname === '/holbertonschool-smiling-school-javascript/homepage.html') {
+		getTutorials("Most popular tutorials");
+		getTutorials("Latest videos");
+	}
 });
