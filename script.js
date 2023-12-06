@@ -155,9 +155,11 @@ function getTutorials(section) {
 
 
 $(document).ready(function() {
+	var page_name = window.location.pathname.substring(window.location.pathname.length - 56);
+
 	getQuotes();
 
-	if (window.location.pathname === '/holbertonschool-smiling-school-javascript/homepage.html') {
+	if (page_name === '/holbertonschool-smiling-school-javascript/homepage.html') {
 		getTutorials("Most popular tutorials");
 		getTutorials("Latest videos");
 	}
