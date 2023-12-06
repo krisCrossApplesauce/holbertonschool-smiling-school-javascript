@@ -57,7 +57,7 @@ function getTutorials() {
 											src="images/play.png"
 											alt="Play"
 											width="64px"
-											class="align-self-center play-overlay"
+											class="align-self-center m-auto play-overlay"
 										/>
 									</div>
 									<div class="card-body">
@@ -78,7 +78,7 @@ function getTutorials() {
 											<h6 class="pl-3 m-0 main-color">${item.author}</h6>
 										</div>
 										<div class="info pt-3 d-flex justify-content-between">
-											<div class="rating">`
+											<div class="rating d-inline-flex">`
 
 				for (i = 0; i < 5; i++) {
 					if (i < item.star) {
@@ -87,6 +87,7 @@ function getTutorials() {
 													src="images/star_on.png"
 													alt="star on"
 													width="15px"
+													height="15px"
 												/>`;
 					}
 					else {
@@ -95,6 +96,7 @@ function getTutorials() {
 													src="images/star_off.png"
 													alt="star on"
 													width="15px"
+													height="15px"
 												/>`;
 					}
 				}
@@ -105,7 +107,7 @@ function getTutorials() {
 										</div>
 									</div>`;
 
-				var card = $('<div>').addClass('card').html(tutorials);
+				var card = $('<div>').addClass('card p-3').html(tutorials);
 				$("#tutorial-carousel").append(card);
 			});
 			$("#tutorial-loader").hide();
@@ -114,10 +116,6 @@ function getTutorials() {
 				infinite: false,
 				slidesToShow: 4,
 				slidesToScroll: 1,
-/**
-				autoplay: true,
-				autoplaySpeed: 2000,
-*/
 				prevArrow: $('.carousel-control-prev'),
 				nextArrow: $('.carousel-control-next'),
 				responsive: [
