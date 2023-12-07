@@ -897,7 +897,7 @@
 
 #video-results .card {
 	width: 16rem;
-	flex: 0 1 calc(25% - 1em);
+/*	flex: 0 1 calc(25% - 1em); */
 }
 
 .row [class*="col-"] {

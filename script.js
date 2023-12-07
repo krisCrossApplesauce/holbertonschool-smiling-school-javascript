@@ -155,13 +155,12 @@ function getTutorials(section) {
 
 
 function getSpecificCourses() {
-	var keyword = "";
+	var keyword = document.getElementById('keywords');
 	const topic = $('#topic').text();
 	const sorting = $('#sorting').text();
 
-	if ($('keywords').value != null) {
-		keyword = $('#keywords').value;
-	}
+	console.log("keyword");
+	console.log(keyword.value);
 
 	$.ajax({
 		url: "https://smileschool-api.hbtn.info/courses",
@@ -169,21 +168,19 @@ function getSpecificCourses() {
 		success: function(data) {
 			var specificCourses = [];
 			var numOfVideos = 0;
+			var x = 0;
 
 			data.courses.forEach(function(item) {
-/*				console.log(item); */
-				var x = 0;
+				x = 0;
+
 				for (i in item.keywords) {
-					if ((i == keyword || keyword == "") && (item.topic == topic || topic == "All") && x === 0) {
-						console.log(item);
-						specificCourses.push(item);
+					if ((item.keywords[i].toLowerCase() == keyword.value.toLowerCase() || keyword.value == "") && (item.topic == topic || topic == "All") && x === 0) {
+							specificCourses.push(item);
 						numOfVideos += 1;
 						x++;
 					}
 				}
 			});
-
-			console.log(specificCourses);
 
 			addCourses(sortCourses(specificCourses, sorting));
 			$("#numOfVideos").text(`${numOfVideos} videos`);
@@ -198,9 +195,6 @@ function sortCourses(courses, sorting) {
 	var sortedCourses = [];
 	var listLength = courses.length;
 
-	console.log(tempCourseList);
-	console.log(listLength);
-
 	if (sorting == "Most Popular") {
 		sortBy = 'star';
 	}
@@ -210,8 +204,6 @@ function sortCourses(courses, sorting) {
 	if (sorting == "Most Viewed") {
 		sortBy = 'views';
 	}
-
-	console.log(sortBy);
 
 	var safetyNum = 0;
 	while (listLength != 0 && safetyNum < 50) {
@@ -234,7 +226,6 @@ function sortCourses(courses, sorting) {
 			idxCounter++;
 		}
 
-		console.log(sortedCourses);
 		sortedCourses.push(currentMostVideo);
 
 		tempCourseList = [];
@@ -246,10 +237,8 @@ function sortCourses(courses, sorting) {
 
 		listLength--;
 		safetyNum++;
-		console.log(listLength);
 	}
 
-	console.log(sortedCourses);
 	return (sortedCourses);
 }
 
@@ -325,7 +314,6 @@ function addCourses(sortedCourses) {
 		var card = $('<div class="card p-3">').html(video);
 		$(videos).append(card);
 	}
-	console.log(videos);
 	$("#loader").hide();
 	$("#video-results").replaceWith(videos);
 }
@@ -335,14 +323,6 @@ function selectFromDropdown(dropdown, selection) {
 	$(dropdown).text(selection);
 	$(dropdown).text(selection);
 	getSpecificCourses();
-}
-
-function searchKeywords(keyPressed) {
-	if (keyPressed == "Enter") {
-		console.log($("#keywords").value);
-/*		$("#keywords").value(""); */
-		getSpecificCourses();
-	}
 }
 
 
@@ -360,4 +340,6 @@ $(document).ready(function() {
 			getTutorials("Latest videos");
 		}
 	}
+
+	document.getElementById('keywords').addEventListener('input', getSpecificCourses);
 });
