@@ -156,8 +156,8 @@ function getTutorials(section) {
 
 function getSpecificCourses() {
 	const keyword = $('#keywords').value;
-	const topic = $('#topic').value;
-	const sortBy = $('#sorting').value;
+	const topic = $('#topic').text();
+	const sorting = $('#sorting').text();
 
 	$.ajax({
 		url: "https://smileschool-api.hbtn.info/courses",
@@ -168,14 +168,17 @@ function getSpecificCourses() {
 
 			data.courses.forEach(function(item) {
 				for (i in item.keywords) {
-					if (i == keyword && (item.topic == topic || topic == "all")) {
-						specificCourses.append(item);
-						numOfVideos++;
+					if (i == keyword && (item.topic == topic || topic == "All")) {
+						specificCourses += item;
+
+						numOfVideos += 1;
 					}
 				}
 			});
 
-			addCourses(sortCourses(specificCourses, sortBy));
+			console.log(specificCourses);
+
+			addCourses(sortCourses(specificCourses, sorting));
 			$("#numOfVideos").text(`${numOfVideos} videos`);
 		},
 		error: function() { console.log("getSpecificCourses ran into an error with the API"); }
@@ -197,11 +200,12 @@ function sortCourses(courses, sorting) {
 		sortBy = 'views';
 	}
 
-	while (tempCourseList != [] && tempCourseList != null) {
+	var safetyNum = 0;
+	while (tempCourseList != [] && safetyNum < 50) {
 		var currentMostVideo = {};
 		var idx = 0;
 		var idxCounter = 0;
-		var anotherTempList = tempCourseList;
+		var anotherTempList = [];
 
 		for (vid in tempCourseList) {
 			if (currentMostVideo == {}) {
@@ -211,27 +215,31 @@ function sortCourses(courses, sorting) {
 				currentMostVideo = vid;
 				idx = idxCounter;
 			}
+			anotherTempList += vid;
 			idxCounter++;
 		}
 
 		sortedCourses += currentMostVideo;
 
 		tempCourseList = [];
-		for (i = 0; anotherTempList[i] && i < 100; i++) {
+		for (item in anotherTempList) {
 			if (i != idx) {
-				tempCourseList += anotherTempList[i];
+				tempCourseList += item;
 			}
 		}
 
 		console.log(currentMostVideo[sortBy]);
+		safetyNum++;
 	}
+
+	return (sortedCourses);
 }
 
 
 function addCourses(sortedCourses) {
 	var videos = $('<div id="video-results">');
 
-	sortedCourses.forEach(function(item) {
+	for (item in sortedCourses) {
 		var video = '';
 		video += `
 			<img
@@ -296,7 +304,7 @@ function addCourses(sortedCourses) {
 
 		var card = $('<div>').addClass('card p-3').html(video);
 		$(videos).append(card);
-	});
+	}
 	$("#loader").hide();
 	$("#results-section").append(videos);
 }
@@ -304,7 +312,7 @@ function addCourses(sortedCourses) {
 
 function selectFromDropdown(dropdown, selection) {
 	$(dropdown).text(selection);
-	$(dropdown).value(selection);
+	$(dropdown).text(selection);
 	getSpecificCourses();
 }
 
