@@ -154,13 +154,180 @@ function getTutorials(section) {
 }
 
 
+function getSpecificCourses() {
+	const keyword = $('#keywords').value;
+	const topic = $('#topic').value;
+	const sortBy = $('#sorting').value;
+
+	$.ajax({
+		url: "https://smileschool-api.hbtn.info/courses",
+		method: "GET",
+		success: function(data) {
+			var specificCourses = [];
+			var numOfVideos = 0;
+
+			data.courses.forEach(function(item) {
+				for (i in item.keywords) {
+					if (i == keyword && (item.topic == topic || topic == "all")) {
+						specificCourses.append(item);
+						numOfVideos++;
+					}
+				}
+			});
+
+			addCourses(sortCourses(specificCourses, sortBy));
+			$("#numOfVideos").text(`${numOfVideos} videos`);
+		},
+		error: function() { console.log("getSpecificCourses ran into an error with the API"); }
+	});
+}
+
+function sortCourses(courses, sorting) {
+	var sortBy = "";
+	var tempCourseList = courses;
+	var sortedCourses = [];
+
+	if (sorting == "Most Popular") {
+		sortBy = 'star';
+	}
+	if (sorting == "Most Recent") {
+		sortBy = 'published_at';
+	}
+	if (sorting == "Most Viewed") {
+		sortBy = 'views';
+	}
+
+	while (tempCourseList != [] && tempCourseList != null) {
+		var currentMostVideo = {};
+		var idx = 0;
+		var idxCounter = 0;
+		var anotherTempList = tempCourseList;
+
+		for (vid in tempCourseList) {
+			if (currentMostVideo == {}) {
+				currentMostVideo = vid;
+			}
+			if (currentMostVideo[sortBy] < vid[sortBy]) {
+				currentMostVideo = vid;
+				idx = idxCounter;
+			}
+			idxCounter++;
+		}
+
+		sortedCourses += currentMostVideo;
+
+		tempCourseList = [];
+		for (i = 0; anotherTempList[i] && i < 100; i++) {
+			if (i != idx) {
+				tempCourseList += anotherTempList[i];
+			}
+		}
+
+		console.log(currentMostVideo[sortBy]);
+	}
+}
+
+
+function addCourses(sortedCourses) {
+	var videos = $('<div id="video-results">');
+
+	sortedCourses.forEach(function(item) {
+		var video = '';
+		video += `
+			<img
+				src="${item.thumb_url}"
+				class="card-img-top"
+				alt="Video thumbnail"
+			/>
+			<div class="card-img-overlay text-center">
+				<img
+					src="images/play.png"
+					alt="Play"
+					width="64px"
+					class="align-self-center m-auto play-overlay"
+				/>
+			</div>
+			<div class="card-body">
+				<h5 class="card-title font-weight-bold">
+					${item.title}
+				</h5>
+				<p class="card-text text-muted">
+					${item['sub-title']}
+				</p>
+				<div class="creator d-flex align-items-center">
+					<img
+						src="${item.author_pic_url}"
+						alt="Creator of
+						Video"
+						width="30px"
+						class="rounded-circle"
+					/>
+					<h6 class="pl-3 m-0 main-color">${item.author}</h6>
+				</div>
+				<div class="info pt-3 d-flex justify-content-between">
+					<div class="rating d-inline-flex">`
+
+		for (i = 0; i < 5; i++) {
+			if (i < item.star) {
+				video += `
+						<img
+							src="images/star_on.png"
+							alt="star on"
+							width="15px"
+							height="15px"
+						/>`;
+			}
+			else {
+				video += `
+						<img
+							src="images/star_off.png"
+							alt="star on"
+							width="15px"
+							height="15px"
+						/>`;
+			}
+		}
+
+		video += `
+					</div>
+					<span class="main-color">${item.duration}</span>
+				</div>
+			</div>`;
+
+		var card = $('<div>').addClass('card p-3').html(video);
+		$(videos).append(card);
+	});
+	$("#loader").hide();
+	$("#results-section").append(videos);
+}
+
+
+function selectFromDropdown(dropdown, selection) {
+	$(dropdown).text(selection);
+	$(dropdown).value(selection);
+	getSpecificCourses();
+}
+
+function searchKeywords(keyPressed) {
+	if (keyPressed === "Enter") {
+/*		$("#keywords").value(""); */
+		getSpecificCourses();
+	}
+}
+
+
 $(document).ready(function() {
-	var page_name = window.location.pathname.substring(window.location.pathname.length - 56);
+	var page_name = window.location.pathname.substring(window.location.pathname.length - 55);
 
-	getQuotes();
+	if (page_name === '/holbertonschool-smiling-school-javascript/courses.html') {
+		getSpecificCourses();
+	}
+	else {
+		getQuotes();
 
-	if (page_name === '/holbertonschool-smiling-school-javascript/homepage.html') {
-		getTutorials("Most popular tutorials");
-		getTutorials("Latest videos");
+		if (page_name === 'holbertonschool-smiling-school-javascript/homepage.html') {
+			getTutorials("Most popular tutorials");
+			getTutorials("Latest videos");
+		}
 	}
 });
