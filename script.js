@@ -196,7 +196,6 @@ function sortCourses(courses, sorting) {
 	var sortBy = "";
 	var tempCourseList = courses;
 	var sortedCourses = [];
-	var x = 0;
 	var listLength = courses.length;
 
 	console.log(tempCourseList);
@@ -235,6 +234,7 @@ function sortCourses(courses, sorting) {
 			idxCounter++;
 		}
 
+		console.log(sortedCourses);
 		sortedCourses.push(currentMostVideo);
 
 		tempCourseList = [];
@@ -246,6 +246,7 @@ function sortCourses(courses, sorting) {
 
 		listLength--;
 		safetyNum++;
+		console.log(listLength);
 	}
 
 	console.log(sortedCourses);
@@ -255,10 +256,11 @@ function sortCourses(courses, sorting) {
 
 function addCourses(sortedCourses) {
 	var videos = $('<div id="video-results">');
+	var video = '';
 
-	for (i = 0; sortedCourses[i]; i++) {
-		var item = sortCourses[i];
-		var video = '';
+	for (i = 0; i < sortedCourses.length; i++) {
+		var item = sortedCourses[i];
+		video = '';
 		video += `
 			<img
 				src="${item['thumb_url']}"
@@ -293,8 +295,8 @@ function addCourses(sortedCourses) {
 				<div class="info pt-3 d-flex justify-content-between">
 					<div class="rating d-inline-flex">`
 
-		for (i = 0; i < 5; i++) {
-			if (i < item.star) {
+		for (ii = 0; ii < 5; ii++) {
+			if (ii < item['star']) {
 				video += `
 						<img
 							src="images/star_on.png"
@@ -320,11 +322,12 @@ function addCourses(sortedCourses) {
 				</div>
 			</div>`;
 
-		var card = $('<div>').addClass('card p-3').html(video);
+		var card = $('<div class="card p-3">').html(video);
 		$(videos).append(card);
 	}
+	console.log(videos);
 	$("#loader").hide();
-	$("#results-section").append(videos);
+	$("#video-results").replaceWith(videos);
 }
 
 
@@ -335,7 +338,8 @@ function selectFromDropdown(dropdown, selection) {
 }
 
 function searchKeywords(keyPressed) {
-	if (keyPressed === "Enter") {
+	if (keyPressed == "Enter") {
+		console.log($("#keywords").value);
 /*		$("#keywords").value(""); */
 		getSpecificCourses();
 	}
