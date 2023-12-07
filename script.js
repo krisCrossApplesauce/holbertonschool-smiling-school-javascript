@@ -155,9 +155,13 @@ function getTutorials(section) {
 
 
 function getSpecificCourses() {
-	const keyword = $('#keywords').value;
+	var keyword = "";
 	const topic = $('#topic').text();
 	const sorting = $('#sorting').text();
+
+	if ($('keywords').value != null) {
+		keyword = $('#keywords').value;
+	}
 
 	$.ajax({
 		url: "https://smileschool-api.hbtn.info/courses",
@@ -167,11 +171,14 @@ function getSpecificCourses() {
 			var numOfVideos = 0;
 
 			data.courses.forEach(function(item) {
+/*				console.log(item); */
+				var x = 0;
 				for (i in item.keywords) {
-					if (i == keyword && (item.topic == topic || topic == "All")) {
-						specificCourses += item;
-
+					if ((i == keyword || keyword == "") && (item.topic == topic || topic == "All") && x === 0) {
+						console.log(item);
+						specificCourses.push(item);
 						numOfVideos += 1;
+						x++;
 					}
 				}
 			});
@@ -189,6 +196,11 @@ function sortCourses(courses, sorting) {
 	var sortBy = "";
 	var tempCourseList = courses;
 	var sortedCourses = [];
+	var x = 0;
+	var listLength = courses.length;
+
+	console.log(tempCourseList);
+	console.log(listLength);
 
 	if (sorting == "Most Popular") {
 		sortBy = 'star';
@@ -200,38 +212,43 @@ function sortCourses(courses, sorting) {
 		sortBy = 'views';
 	}
 
+	console.log(sortBy);
+
 	var safetyNum = 0;
-	while (tempCourseList != [] && safetyNum < 50) {
+	while (listLength != 0 && safetyNum < 50) {
 		var currentMostVideo = {};
 		var idx = 0;
 		var idxCounter = 0;
 		var anotherTempList = [];
+		var tempItem = {};
 
-		for (vid in tempCourseList) {
-			if (currentMostVideo == {}) {
-				currentMostVideo = vid;
+		for(i = 0; tempCourseList[i] && i < listLength; i++) {
+			tempItem = tempCourseList[i];
+			if (i === 0) {
+				currentMostVideo = tempItem;
 			}
-			if (currentMostVideo[sortBy] < vid[sortBy]) {
-				currentMostVideo = vid;
+			if (currentMostVideo[sortBy] <= tempItem[sortBy]) {
+				currentMostVideo = tempItem;
 				idx = idxCounter;
 			}
-			anotherTempList += vid;
+			anotherTempList.push(tempItem);
 			idxCounter++;
 		}
 
-		sortedCourses += currentMostVideo;
+		sortedCourses.push(currentMostVideo);
 
 		tempCourseList = [];
-		for (item in anotherTempList) {
-			if (i != idx) {
-				tempCourseList += item;
+		for (ii = 0; anotherTempList[ii] && ii <= listLength; ii++) {
+			if (ii != idx) {
+				tempCourseList.push(anotherTempList[ii]);
 			}
 		}
 
-		console.log(currentMostVideo[sortBy]);
+		listLength--;
 		safetyNum++;
 	}
 
+	console.log(sortedCourses);
 	return (sortedCourses);
 }
 
@@ -239,11 +256,12 @@ function sortCourses(courses, sorting) {
 function addCourses(sortedCourses) {
 	var videos = $('<div id="video-results">');
 
-	for (item in sortedCourses) {
+	for (i = 0; sortedCourses[i]; i++) {
+		var item = sortCourses[i];
 		var video = '';
 		video += `
 			<img
-				src="${item.thumb_url}"
+				src="${item['thumb_url']}"
 				class="card-img-top"
 				alt="Video thumbnail"
 			/>
@@ -257,20 +275,20 @@ function addCourses(sortedCourses) {
 			</div>
 			<div class="card-body">
 				<h5 class="card-title font-weight-bold">
-					${item.title}
+					${item['title']}
 				</h5>
 				<p class="card-text text-muted">
 					${item['sub-title']}
 				</p>
 				<div class="creator d-flex align-items-center">
 					<img
-						src="${item.author_pic_url}"
+						src="${item['author_pic_url']}"
 						alt="Creator of
 						Video"
 						width="30px"
 						class="rounded-circle"
 					/>
-					<h6 class="pl-3 m-0 main-color">${item.author}</h6>
+					<h6 class="pl-3 m-0 main-color">${item['author']}</h6>
 				</div>
 				<div class="info pt-3 d-flex justify-content-between">
 					<div class="rating d-inline-flex">`
@@ -298,7 +316,7 @@ function addCourses(sortedCourses) {
 
 		video += `
 					</div>
-					<span class="main-color">${item.duration}</span>
+					<span class="main-color">${item['duration']}</span>
 				</div>
 			</div>`;
 
